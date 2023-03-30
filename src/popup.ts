@@ -2,12 +2,13 @@
 
 import './bulma.min.css';
 
+export type ExtSettings = {
+  nameToExclude?: string;
+  businessUnitToHide?: string;
+  groupByDivision?: boolean;
+};
+
 (function () {
-  type ExtSettings = {
-    nameToExclude?: string;
-    businessUnitToHide?: string;
-    groupByDivision?: boolean;
-  };
   // We will make use of Storage API to get and store `count` value
   // More information on Storage API can we found at
   // https://developer.chrome.com/extensions/storage
@@ -55,9 +56,9 @@ import './bulma.min.css';
     const inputNameToExclude = document.getElementById(
       'name-to-exclude'
     ) as HTMLInputElement;
-    const checkGroupByDivision = document.getElementById(
-      'group-by-division'
-    ) as HTMLInputElement;
+    // const checkGroupByDivision = document.getElementById(
+    //   'group-by-division'
+    // ) as HTMLInputElement;
     const inputBusinessUnitToHide = document.getElementById(
       'business-unit-to-hide'
     ) as HTMLInputElement;
@@ -73,17 +74,27 @@ import './bulma.min.css';
 
     inputNameToExclude.value = nameToExclude ?? '';
     inputBusinessUnitToHide.value = businessUnitToHide ?? '';
-    checkGroupByDivision.checked = groupByDivision ?? false;
+    // checkGroupByDivision.checked = groupByDivision ?? true;
 
     buttonGetAttendees.addEventListener('click', () => {
       const nameToExclude = inputNameToExclude.value;
       const businessUnitToHide = inputBusinessUnitToHide.value;
-      const groupByDivision = checkGroupByDivision.checked;
+      // const groupByDivision = checkGroupByDivision.checked;
       extStorage.set(
         { nameToExclude, groupByDivision, businessUnitToHide },
         () => {
-          textareaAttendees.value =
-            nameToExclude + groupByDivision + businessUnitToHide;
+          chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+            if (tabs[0].id === undefined) {
+              return;
+            }
+            chrome.tabs.sendMessage(
+              tabs[0].id,
+              { nameToExclude, businessUnitToHide, groupByDivision },
+              (response) => {
+                textareaAttendees.value = response;
+              }
+            );
+          });
         }
       );
     });
@@ -96,12 +107,13 @@ import './bulma.min.css';
     extStorage.get((extSettings: ExtSettings) => {
       const nameToExclude = extSettings.nameToExclude ?? '';
       const businessUnitToHide = extSettings.businessUnitToHide ?? '';
-      const groupByDivision = extSettings.groupByDivision ?? false;
+      const groupByDivision = extSettings.groupByDivision ?? true;
       extStorage.set(
         { nameToExclude, groupByDivision, businessUnitToHide },
-        () => {}
+        () => {
+          setupExt({ nameToExclude, groupByDivision, businessUnitToHide });
+        }
       );
-      setupExt({ nameToExclude, groupByDivision, businessUnitToHide });
     });
   }
 
