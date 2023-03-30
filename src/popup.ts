@@ -99,7 +99,9 @@ export type ExtSettings = {
       );
     });
 
-    buttonCopyToClipboard.addEventListener('click', () => {});
+    buttonCopyToClipboard.addEventListener('click', () => {
+      navigator.clipboard.writeText(textareaAttendees.value);
+    });
   }
 
   function restoreExt() {
