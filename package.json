@@ -1,12 +1,14 @@
 {
   "name": "knox-meeting-attendees",
   "version": "0.1.0",
-  "description": "My Chrome Extension",
+  "description": "Knox Meeting attendees",
   "private": true,
   "scripts": {
     "watch": "webpack --mode=development --watch --config config/webpack.config.js",
-    "build": "webpack --mode=production --config config/webpack.config.js && node zip.js",
-    "format": "prettier --write --ignore-unknown \"{config,public,src}/**/*.{html,css,js,ts,json}\""
+    "build": "webpack --mode=production --config config/webpack.config.js",
+    "format": "prettier --write --ignore-unknown \"{config,public,src}/**/*.{html,css,js,ts,json}\"",
+    "pack": "node pack.js",
+    "repack": "npm run build && npm run pack"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.181",
@@ -21,5 +23,8 @@
     "webpack": "^5.77.0",
     "webpack-cli": "^4.10.0",
     "webpack-merge": "^5.8.0"
+  },
+  "dependencies": {
+    "bulma": "^0.9.4"
   }
 }

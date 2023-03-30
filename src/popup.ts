@@ -1,6 +1,12 @@
 'use strict';
 
-import './popup.css';
+import './bulma.min.css';
+
+export type ExtSettings = {
+  nameToExclude?: string;
+  businessUnitToHide?: string;
+  groupByDivision?: boolean;
+};
 
 (function () {
   // We will make use of Storage API to get and store `count` value
@@ -10,16 +16,30 @@ import './popup.css';
   // To get storage access, we have to mention it in `permissions` property of manifest.json file
   // More information on Permissions can we found at
   // https://developer.chrome.com/extensions/declare_permissions
-  const counterStorage = {
-    get: (cb: (count: number) => void) => {
-      chrome.storage.sync.get(['count'], (result) => {
-        cb(result.count);
-      });
+  const extStorage = {
+    get: (
+      cb: ({
+        nameToExclude,
+        businessUnitToHide,
+        groupByDivision,
+      }: ExtSettings) => void
+    ) => {
+      chrome.storage.sync.get(
+        ['nameToExclude', 'groupByDivision', 'businessUnitToHide'],
+        (result) => {
+          cb(result as ExtSettings);
+        }
+      );
     },
-    set: (value: number, cb: () => void) => {
+    set: (
+      { nameToExclude, groupByDivision, businessUnitToHide }: ExtSettings,
+      cb: () => void
+    ) => {
       chrome.storage.sync.set(
         {
-          count: value,
+          nameToExclude,
+          businessUnitToHide,
+          groupByDivision,
         },
         () => {
           cb();
@@ -28,74 +48,76 @@ import './popup.css';
     },
   };
 
-  function setupCounter(initialValue = 0) {
-    document.getElementById('counter')!.innerHTML = initialValue.toString();
+  function setupExt({
+    nameToExclude,
+    businessUnitToHide,
+    groupByDivision,
+  }: ExtSettings) {
+    const inputNameToExclude = document.getElementById(
+      'name-to-exclude'
+    ) as HTMLInputElement;
+    // const checkGroupByDivision = document.getElementById(
+    //   'group-by-division'
+    // ) as HTMLInputElement;
+    const inputBusinessUnitToHide = document.getElementById(
+      'business-unit-to-hide'
+    ) as HTMLInputElement;
+    const buttonGetAttendees = document.getElementById(
+      'get-attendees'
+    ) as HTMLButtonElement;
+    const textareaAttendees = document.getElementById(
+      'attendees'
+    ) as HTMLTextAreaElement;
+    const buttonCopyToClipboard = document.getElementById(
+      'copy-to-clipboard'
+    ) as HTMLButtonElement;
 
-    document.getElementById('incrementBtn')!.addEventListener('click', () => {
-      updateCounter({
-        type: 'INCREMENT',
-      });
-    });
+    inputNameToExclude.value = nameToExclude ?? '';
+    inputBusinessUnitToHide.value = businessUnitToHide ?? '';
+    // checkGroupByDivision.checked = groupByDivision ?? true;
 
-    document.getElementById('decrementBtn')!.addEventListener('click', () => {
-      updateCounter({
-        type: 'DECREMENT',
-      });
-    });
-  }
-
-  function updateCounter({ type }: { type: string }) {
-    counterStorage.get((count: number) => {
-      let newCount: number;
-
-      if (type === 'INCREMENT') {
-        newCount = count + 1;
-      } else if (type === 'DECREMENT') {
-        newCount = count - 1;
-      } else {
-        newCount = count;
-      }
-
-      counterStorage.set(newCount, () => {
-        document.getElementById('counter')!.innerHTML = newCount.toString();
-
-        // Communicate with content script of
-        // active tab by sending a message
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          const tab = tabs[0];
-
-          chrome.tabs.sendMessage(
-            tab.id!,
-            {
-              type: 'COUNT',
-              payload: {
-                count: newCount,
-              },
-            },
-            (response) => {
-              console.log('Current count value passed to contentScript file');
+    buttonGetAttendees.addEventListener('click', () => {
+      const nameToExclude = inputNameToExclude.value;
+      const businessUnitToHide = inputBusinessUnitToHide.value;
+      // const groupByDivision = checkGroupByDivision.checked;
+      extStorage.set(
+        { nameToExclude, groupByDivision, businessUnitToHide },
+        () => {
+          chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+            if (tabs[0].id === undefined) {
+              return;
             }
-          );
-        });
-      });
+            chrome.tabs.sendMessage(
+              tabs[0].id,
+              { nameToExclude, businessUnitToHide, groupByDivision },
+              (response) => {
+                textareaAttendees.value = response;
+              }
+            );
+          });
+        }
+      );
     });
+
+    buttonCopyToClipboard.addEventListener('click', () => {});
   }
 
-  function restoreCounter() {
+  function restoreExt() {
     // Restore count value
-    counterStorage.get((count: number) => {
-      if (typeof count === 'undefined') {
-        // Set counter value as 0
-        counterStorage.set(0, () => {
-          setupCounter(0);
-        });
-      } else {
-        setupCounter(count);
-      }
+    extStorage.get((extSettings: ExtSettings) => {
+      const nameToExclude = extSettings.nameToExclude ?? '';
+      const businessUnitToHide = extSettings.businessUnitToHide ?? '';
+      const groupByDivision = extSettings.groupByDivision ?? true;
+      extStorage.set(
+        { nameToExclude, groupByDivision, businessUnitToHide },
+        () => {
+          setupExt({ nameToExclude, groupByDivision, businessUnitToHide });
+        }
+      );
     });
   }
 
-  document.addEventListener('DOMContentLoaded', restoreCounter);
+  document.addEventListener('DOMContentLoaded', restoreExt);
 
   // Communicate with background file by sending a message
   chrome.runtime.sendMessage(
