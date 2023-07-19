@@ -17,7 +17,7 @@ const ERROR_ELEM_NOT_EXIST = (elem: string) =>
   'Uh oh... ' +
   `Seems like attendee ${elem} does not exists. ` +
   'If the table EXISTS, please create a issue on ' +
-  'https://github.com/gsongsong/knox-meeting-attendees';
+  'https://github.com/somidad/knox-meeting-attendees/issues/new/choose';
 
 const ARRAY_DID_ATTEND = ['참석', 'Attended', '出勤', '出席'];
 

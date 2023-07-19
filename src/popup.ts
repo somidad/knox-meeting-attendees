@@ -53,6 +53,9 @@ export type ExtSettings = {
     businessUnitToHide,
     groupByDivision,
   }: ExtSettings) {
+    const buttonReportBug = document.getElementById(
+      'report-bug'
+    ) as HTMLButtonElement;
     const inputNameToExclude = document.getElementById(
       'name-to-exclude'
     ) as HTMLInputElement;
@@ -71,6 +74,12 @@ export type ExtSettings = {
     const buttonCopyToClipboard = document.getElementById(
       'copy-to-clipboard'
     ) as HTMLButtonElement;
+
+    buttonReportBug.addEventListener('click', () => {
+      chrome.tabs.create({
+        url: 'https://github.com/somidad/knox-meeting-attendees/issues/new/choose',
+      });
+    });
 
     inputNameToExclude.value = nameToExclude ?? '';
     inputBusinessUnitToHide.value = businessUnitToHide ?? '';
