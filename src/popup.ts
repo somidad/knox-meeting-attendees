@@ -94,13 +94,25 @@ export type ExtSettings = {
         () => {
           chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
             if (tabs[0].id === undefined) {
+              console.log('Tab ID is undefined');
               return;
             }
+            console.log('Requesting content script to get attendees...');
             chrome.tabs.sendMessage(
               tabs[0].id,
               { nameToExclude, businessUnitToHide, groupByDivision },
               (response) => {
-                textareaAttendees.value = response;
+                console.group('Received response from content script:');
+                console.log(response);
+                console.groupEnd();
+                if (response === undefined) {
+                  textareaAttendees.value =
+                    'Something went wrong. Please report bug to improve this extension';
+                } else if (response === '') {
+                  textareaAttendees.value = 'No attendee';
+                } else {
+                  textareaAttendees.value = response;
+                }
               }
             );
           });
