@@ -1,21 +1,15 @@
 # <img src="public/icons/icon_48.png" width="45" align="left"> Knox Meeting Attendees
 
-My Chrome Extension
+[Chrome Web Store](https://chrome.google.com/webstore/detail/knox-meeting-attendees/pdmkkplpfkkopbkkgogndfeiolbdpbkk)
 
-## Features
+## Changes
 
-- Feature 1
-- Feature 2
+### v0.4.0
 
-## Install
+- Enhancement
+  - Print _No attendee_ in such case
+  - Add _Report Bug_ button
 
-[**Chrome** extension]() <!-- TODO: Add chrome extension link inside parenthesis -->
+## Known issues
 
-## Contribution
-
-Suggestions and pull requests are welcomed!.
-
----
-
-This project was bootstrapped with [Chrome Extension CLI](https://github.com/dutiyesh/chrome-extension-cli)
-
+- [ ] Sometimes getting attendees not working. See [issue #5](https://github.com/somidad/knox-meeting-attendees/issues/5#issuecomment-1641860544)
