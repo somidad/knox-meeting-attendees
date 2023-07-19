@@ -91,7 +91,11 @@ export type ExtSettings = {
               tabs[0].id,
               { nameToExclude, businessUnitToHide, groupByDivision },
               (response) => {
-                textareaAttendees.value = response;
+                if (!response) {
+                  textareaAttendees.value = 'No attendee';
+                } else {
+                  textareaAttendees.value = response;
+                }
               }
             );
           });
