@@ -31,12 +31,12 @@ chrome.runtime.onMessage.addListener(
     const table = document.querySelector('.conts-list table tbody');
     if (!table) {
       sendResponse(ERROR_ELEM_NOT_EXIST('table'));
-      return true;
+      return;
     }
     const rows = table.querySelectorAll('tr');
     if (!rows.length) {
       sendResponse(ERROR_ELEM_NOT_EXIST('row'));
-      return true;
+      return;
     }
     const attendeesByDivision: { [division: string]: string[] } = {};
     rows.forEach((row) => {
@@ -71,6 +71,5 @@ chrome.runtime.onMessage.addListener(
       )
       .join('\n');
     sendResponse(attendees);
-    return true;
   }
 );
