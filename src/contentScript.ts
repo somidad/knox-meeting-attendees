@@ -28,17 +28,23 @@ chrome.runtime.onMessage.addListener(
     sender,
     sendResponse
   ) => {
+    console.log(
+      'knox-meeting-attendees: Received request to get attendees from popup'
+    );
     const table = document.querySelector('.conts-list table tbody');
     if (!table) {
+      console.log('knox-meeting-attendees: Table tag is not found');
       sendResponse(ERROR_ELEM_NOT_EXIST('table'));
       return true;
     }
     const rows = table.querySelectorAll('tr');
     if (!rows.length) {
+      console.log('knox-meeting-attendees: Table row tag is not found');
       sendResponse(ERROR_ELEM_NOT_EXIST('row'));
       return true;
     }
     const attendeesByDivision: { [division: string]: string[] } = {};
+    let totalAttendees = 0;
     rows.forEach((row) => {
       const [cellName, , cellDivision, , cellDidAttend] =
         row.querySelectorAll('td');
@@ -58,6 +64,7 @@ chrome.runtime.onMessage.addListener(
         return;
       }
       // Currently only Group by division is supported
+      totalAttendees++;
       if (!(division in attendeesByDivision)) {
         attendeesByDivision[division] = [name];
       } else {
@@ -70,6 +77,8 @@ chrome.runtime.onMessage.addListener(
           `${division}: ${attendeesPerDivision.join(', ')}`
       )
       .join('\n');
+    console.log(`knox-meeting-attendees: Total ${totalAttendees} attendees`);
+    console.log('knox-meeting-attendees: Sending response to popup');
     sendResponse(attendees);
     return true;
   }
