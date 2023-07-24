@@ -24,13 +24,19 @@ const ARRAY_DID_ATTEND = ['참석', 'Attended', '出勤', '出席'];
 // Listen for message
 chrome.runtime.onMessage.addListener(
   (
-    { nameToExclude, businessUnitToHide, groupByDivision }: ExtSettings,
+    {
+      nameToExclude,
+      businessUnitToHide,
+      groupByDivision,
+      addKoreanHonorificSuffix,
+    }: ExtSettings,
     sender,
     sendResponse
   ) => {
     console.log(
       'knox-meeting-attendees: Received request to get attendees from popup'
     );
+    const koreanHonorificSuffix = addKoreanHonorificSuffix ? ' 님' : '';
     const table = document.querySelector('.conts-list table tbody');
     if (!table) {
       console.log('knox-meeting-attendees: Table tag is not found');
@@ -66,9 +72,9 @@ chrome.runtime.onMessage.addListener(
       // Currently only Group by division is supported
       totalAttendees++;
       if (!(division in attendeesByDivision)) {
-        attendeesByDivision[division] = [name];
+        attendeesByDivision[division] = [name + koreanHonorificSuffix];
       } else {
-        attendeesByDivision[division].push(name);
+        attendeesByDivision[division].push(name + koreanHonorificSuffix);
       }
     });
     const attendees = Object.entries(attendeesByDivision)

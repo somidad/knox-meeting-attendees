@@ -6,6 +6,7 @@ export type ExtSettings = {
   nameToExclude?: string;
   businessUnitToHide?: string;
   groupByDivision?: boolean;
+  addKoreanHonorificSuffix?: boolean;
 };
 
 (function () {
@@ -22,17 +23,28 @@ export type ExtSettings = {
         nameToExclude,
         businessUnitToHide,
         groupByDivision,
+        addKoreanHonorificSuffix,
       }: ExtSettings) => void
     ) => {
       chrome.storage.sync.get(
-        ['nameToExclude', 'groupByDivision', 'businessUnitToHide'],
+        [
+          'nameToExclude',
+          'groupByDivision',
+          'businessUnitToHide',
+          'addKoreanHonorificSuffix',
+        ],
         (result) => {
           cb(result as ExtSettings);
         }
       );
     },
     set: (
-      { nameToExclude, groupByDivision, businessUnitToHide }: ExtSettings,
+      {
+        nameToExclude,
+        groupByDivision,
+        businessUnitToHide,
+        addKoreanHonorificSuffix,
+      }: ExtSettings,
       cb: () => void
     ) => {
       chrome.storage.sync.set(
@@ -40,6 +52,7 @@ export type ExtSettings = {
           nameToExclude,
           businessUnitToHide,
           groupByDivision,
+          addKoreanHonorificSuffix,
         },
         () => {
           cb();
@@ -52,6 +65,7 @@ export type ExtSettings = {
     nameToExclude,
     businessUnitToHide,
     groupByDivision,
+    addKoreanHonorificSuffix,
   }: ExtSettings) {
     const buttonReportBug = document.getElementById(
       'report-bug'
@@ -64,6 +78,9 @@ export type ExtSettings = {
     // ) as HTMLInputElement;
     const inputBusinessUnitToHide = document.getElementById(
       'business-unit-to-hide'
+    ) as HTMLInputElement;
+    const checkAddKoreanHonorificSuffix = document.getElementById(
+      'add-korean-honorific-suffix'
     ) as HTMLInputElement;
     const buttonGetAttendees = document.getElementById(
       'get-attendees'
@@ -84,13 +101,20 @@ export type ExtSettings = {
     inputNameToExclude.value = nameToExclude ?? '';
     inputBusinessUnitToHide.value = businessUnitToHide ?? '';
     // checkGroupByDivision.checked = groupByDivision ?? true;
+    checkAddKoreanHonorificSuffix.checked = addKoreanHonorificSuffix ?? false;
 
     buttonGetAttendees.addEventListener('click', () => {
       const nameToExclude = inputNameToExclude.value;
       const businessUnitToHide = inputBusinessUnitToHide.value;
       // const groupByDivision = checkGroupByDivision.checked;
+      const addKoreanHonorificSuffix = checkAddKoreanHonorificSuffix.checked;
       extStorage.set(
-        { nameToExclude, groupByDivision, businessUnitToHide },
+        {
+          nameToExclude,
+          groupByDivision,
+          businessUnitToHide,
+          addKoreanHonorificSuffix,
+        },
         () => {
           chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
             if (tabs[0].id === undefined) {
@@ -100,7 +124,12 @@ export type ExtSettings = {
             console.log('Requesting content script to get attendees...');
             chrome.tabs.sendMessage(
               tabs[0].id,
-              { nameToExclude, businessUnitToHide, groupByDivision },
+              {
+                nameToExclude,
+                businessUnitToHide,
+                groupByDivision,
+                addKoreanHonorificSuffix,
+              },
               (response) => {
                 console.group('Received response from content script:');
                 console.log(response);
@@ -131,10 +160,22 @@ export type ExtSettings = {
       const nameToExclude = extSettings.nameToExclude ?? '';
       const businessUnitToHide = extSettings.businessUnitToHide ?? '';
       const groupByDivision = extSettings.groupByDivision ?? true;
+      const addKoreanHonorificSuffix =
+        extSettings.addKoreanHonorificSuffix ?? false;
       extStorage.set(
-        { nameToExclude, groupByDivision, businessUnitToHide },
+        {
+          nameToExclude,
+          groupByDivision,
+          businessUnitToHide,
+          addKoreanHonorificSuffix,
+        },
         () => {
-          setupExt({ nameToExclude, groupByDivision, businessUnitToHide });
+          setupExt({
+            nameToExclude,
+            groupByDivision,
+            businessUnitToHide,
+            addKoreanHonorificSuffix,
+          });
         }
       );
     });
