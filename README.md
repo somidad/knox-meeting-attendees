@@ -4,6 +4,12 @@
 
 ## Changes
 
+### v0.5.0
+
+- Enhancement
+  - Add option to hide nickname (experimental)
+  - Add option to add korean honorific suffix (님, nim)
+
 ### v0.4.0
 
 - Enhancement
