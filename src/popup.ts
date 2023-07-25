@@ -6,6 +6,7 @@ export type ExtSettings = {
   nameToExclude?: string;
   businessUnitToHide?: string;
   groupByDivision?: boolean;
+  hideNickname?: boolean;
   addKoreanHonorificSuffix?: boolean;
 };
 
@@ -23,6 +24,7 @@ export type ExtSettings = {
         nameToExclude,
         businessUnitToHide,
         groupByDivision,
+        hideNickname,
         addKoreanHonorificSuffix,
       }: ExtSettings) => void
     ) => {
@@ -31,6 +33,7 @@ export type ExtSettings = {
           'nameToExclude',
           'groupByDivision',
           'businessUnitToHide',
+          'hideNickname',
           'addKoreanHonorificSuffix',
         ],
         (result) => {
@@ -43,6 +46,7 @@ export type ExtSettings = {
         nameToExclude,
         groupByDivision,
         businessUnitToHide,
+        hideNickname,
         addKoreanHonorificSuffix,
       }: ExtSettings,
       cb: () => void
@@ -52,6 +56,7 @@ export type ExtSettings = {
           nameToExclude,
           businessUnitToHide,
           groupByDivision,
+          hideNickname,
           addKoreanHonorificSuffix,
         },
         () => {
@@ -65,6 +70,7 @@ export type ExtSettings = {
     nameToExclude,
     businessUnitToHide,
     groupByDivision,
+    hideNickname,
     addKoreanHonorificSuffix,
   }: ExtSettings) {
     const buttonReportBug = document.getElementById(
@@ -78,6 +84,9 @@ export type ExtSettings = {
     // ) as HTMLInputElement;
     const inputBusinessUnitToHide = document.getElementById(
       'business-unit-to-hide'
+    ) as HTMLInputElement;
+    const checkHideNickname = document.getElementById(
+      'hide-nickname'
     ) as HTMLInputElement;
     const checkAddKoreanHonorificSuffix = document.getElementById(
       'add-korean-honorific-suffix'
@@ -101,18 +110,21 @@ export type ExtSettings = {
     inputNameToExclude.value = nameToExclude ?? '';
     inputBusinessUnitToHide.value = businessUnitToHide ?? '';
     // checkGroupByDivision.checked = groupByDivision ?? true;
+    checkHideNickname.checked = hideNickname ?? false;
     checkAddKoreanHonorificSuffix.checked = addKoreanHonorificSuffix ?? false;
 
     buttonGetAttendees.addEventListener('click', () => {
       const nameToExclude = inputNameToExclude.value;
       const businessUnitToHide = inputBusinessUnitToHide.value;
       // const groupByDivision = checkGroupByDivision.checked;
+      const hideNickname = checkHideNickname.checked;
       const addKoreanHonorificSuffix = checkAddKoreanHonorificSuffix.checked;
       extStorage.set(
         {
           nameToExclude,
           groupByDivision,
           businessUnitToHide,
+          hideNickname,
           addKoreanHonorificSuffix,
         },
         () => {
@@ -128,6 +140,7 @@ export type ExtSettings = {
                 nameToExclude,
                 businessUnitToHide,
                 groupByDivision,
+                hideNickname,
                 addKoreanHonorificSuffix,
               },
               (response) => {
@@ -160,6 +173,7 @@ export type ExtSettings = {
       const nameToExclude = extSettings.nameToExclude ?? '';
       const businessUnitToHide = extSettings.businessUnitToHide ?? '';
       const groupByDivision = extSettings.groupByDivision ?? true;
+      const hideNickname = extSettings.hideNickname ?? false;
       const addKoreanHonorificSuffix =
         extSettings.addKoreanHonorificSuffix ?? false;
       extStorage.set(
@@ -167,6 +181,7 @@ export type ExtSettings = {
           nameToExclude,
           groupByDivision,
           businessUnitToHide,
+          hideNickname,
           addKoreanHonorificSuffix,
         },
         () => {
@@ -174,6 +189,7 @@ export type ExtSettings = {
             nameToExclude,
             groupByDivision,
             businessUnitToHide,
+            hideNickname,
             addKoreanHonorificSuffix,
           });
         }

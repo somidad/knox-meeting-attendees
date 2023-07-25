@@ -28,6 +28,7 @@ chrome.runtime.onMessage.addListener(
       nameToExclude,
       businessUnitToHide,
       groupByDivision,
+      hideNickname,
       addKoreanHonorificSuffix,
     }: ExtSettings,
     sender,
@@ -59,6 +60,13 @@ chrome.runtime.onMessage.addListener(
       if (!name || name === nameToExclude) {
         return;
       }
+      const mayContainNickname =
+        hideNickname && name.endsWith(')') && name.includes(' (');
+      const indexNicknameStart = mayContainNickname
+        ? name.indexOf(' (')
+        : name.length;
+      const nameWithoutNickname = name.substring(0, indexNicknameStart);
+      const nameWithHonorific = nameWithoutNickname + koreanHonorificSuffix;
       let division = cellDivision.textContent ?? '';
       if (businessUnitToHide) {
         const index = division.lastIndexOf(`(${businessUnitToHide})`);
@@ -72,9 +80,9 @@ chrome.runtime.onMessage.addListener(
       // Currently only Group by division is supported
       totalAttendees++;
       if (!(division in attendeesByDivision)) {
-        attendeesByDivision[division] = [name + koreanHonorificSuffix];
+        attendeesByDivision[division] = [nameWithHonorific];
       } else {
-        attendeesByDivision[division].push(name + koreanHonorificSuffix);
+        attendeesByDivision[division].push(nameWithHonorific);
       }
     });
     const attendees = Object.entries(attendeesByDivision)
