@@ -100,10 +100,19 @@ export type ExtSettings = {
     const buttonCopyToClipboard = document.getElementById(
       'copy-to-clipboard'
     ) as HTMLButtonElement;
+    const buttonSupport = document.getElementById(
+      'support'
+    ) as HTMLButtonElement;
 
     buttonReportBug.addEventListener('click', () => {
       chrome.tabs.create({
         url: 'https://github.com/somidad/knox-meeting-attendees/issues/new/choose',
+      });
+    });
+
+    buttonSupport.addEventListener('click', () => {
+      chrome.tabs.create({
+        url: 'https://www.buymeacoffee.com/somidad',
       });
     });
 
