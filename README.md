@@ -22,6 +22,4 @@
 
 ## Support
 
-If you feel this is useful, please consider supporting me:
-
-<a href="https://www.buymeacoffee.com/somidad"><img src="https://cdn.jsdelivr.net/gh/somidad/telegraph/assets/greeen-button_1687096631457_0.png" width="200">
+If you feel this is useful, please consider [support](https://www.buymeacoffee.com/somidad):
