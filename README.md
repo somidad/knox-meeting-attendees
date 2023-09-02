@@ -22,4 +22,4 @@
 
 ## Support
 
-If you feel this is useful, please consider [support](https://www.buymeacoffee.com/somidad):
+If you feel this is useful, please consider [support](https://www.buymeacoffee.com/somidad)
