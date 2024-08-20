@@ -1,6 +1,6 @@
 {
   "name": "knox-meeting-attendees",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Knox Meeting attendees",
   "private": true,
   "scripts": {
