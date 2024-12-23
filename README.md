@@ -1,5 +1,9 @@
 # <img src="public/icons/icon_48.png" width="45" align="left"> Knox Meeting Attendees
 
+> [!WARNING]
+> I am going to sunset this project because 'Knox Meeting Copilot' officially supports summarization of a meeting including attendees.
+> You can still install and use this extension as long as it is on the Chrome Web Store. However, it will be no longer maintained and fixed, if there is an issue.
+
 [Chrome Web Store](https://chrome.google.com/webstore/detail/knox-meeting-attendees/pdmkkplpfkkopbkkgogndfeiolbdpbkk)
 
 ## Changes
